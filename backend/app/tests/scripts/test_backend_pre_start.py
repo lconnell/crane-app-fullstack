@@ -24,10 +24,10 @@ def test_init_successful_connection() -> None:
         except Exception:
             connection_successful = False
 
-        assert (
-            connection_successful
-        ), "The database connection should be successful and not raise an exception."
+        assert connection_successful, (
+            "The database connection should be successful and not raise an exception."
+        )
 
-        assert session_mock.exec.called_once_with(
+        session_mock.exec.assert_called_once_with(
             select(1)
-        ), "The session should execute a select statement once."
+        )  # Ensure exec called once with select(1)
