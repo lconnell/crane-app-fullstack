@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
@@ -44,11 +45,13 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
     id: uuid.UUID
+    created_at: datetime
 
 
 class UsersPublic(SQLModel):
@@ -79,12 +82,14 @@ class Item(ItemBase, table=True):
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
     owner: User | None = Relationship(back_populates="items")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 # Properties to return via API, id is always required
 class ItemPublic(ItemBase):
     id: uuid.UUID
     owner_id: uuid.UUID
+    created_at: datetime
 
 
 class ItemsPublic(SQLModel):

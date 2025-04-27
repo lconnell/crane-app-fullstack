@@ -12,7 +12,7 @@ docker compose watch
 
 Frontend, built with Docker, with routes handled based on the path: http://localhost:5173
 
-Backend, JSON based web API based on OpenAPI: http://localhost:8000
+Backend, JSON formatted web API based on OpenAPI which you can import into Hoppscotch etc...: http://localhost:8000/api/v1/openapi.json
 
 Automatic interactive documentation with Swagger UI (from the OpenAPI backend): http://localhost:8000/docs
 
