@@ -1,23 +1,38 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { login } from '$lib/stores/auth';
+	import { login, authError } from '$lib/stores/auth';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import type { LoginCredentials } from '$lib/types';
 
 	let email = '';
 	let password = '';
 	let error = '';
 	let loading = false;
 
-	async function handleSubmit() {
+	$: if ($authError) {
+		error = $authError;
+	}
+
+	async function handleLogin() {
+		// Don't proceed if already loading
+		if (loading) return;
+
+		// Don't proceed if fields are empty
+		if (!email || !password) {
+			error = 'Please enter both email and password';
+			return;
+		}
+
 		loading = true;
 		error = '';
 
 		try {
+			console.log('Attempting login with:', { email, password });
 			await login(email, password);
+			console.log('Login successful, redirecting to home');
 			await goto('/');
 		} catch (e) {
+			console.error('Login error:', e);
 			error = e instanceof Error ? e.message : 'Login failed';
 		} finally {
 			loading = false;
@@ -28,10 +43,10 @@
 <div class="login-container">
 	<div class="login-box">
 		<h1>Login</h1>
-		<form on:submit|preventDefault={handleSubmit}>
+		<div class="form-container">
 			<Input
 				type="email"
-				name="email"
+				name="username"
 				label="Email"
 				bind:value={email}
 				required
@@ -48,10 +63,10 @@
 			{#if error}
 				<div class="error">{error}</div>
 			{/if}
-			<Button type="submit" loading={loading} disabled={loading}>
+			<Button type="button" on:click={handleLogin} loading={loading} disabled={loading}>
 				{loading ? 'Logging in...' : 'Login'}
 			</Button>
-		</form>
+		</div>
 		<div class="links">
 			<a href="/signup">Create an account</a>
 			<a href="/recover-password">Forgot password?</a>
@@ -84,7 +99,7 @@
 		font-size: 1.5rem;
 	}
 
-	form {
+	.form-container {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;

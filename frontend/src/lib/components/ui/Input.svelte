@@ -33,6 +33,8 @@
 		on:focus
 		on:blur
 		class="input"
+		formnovalidate
+		spellcheck="false"
 	/>
 	{#if error}
 		<span class="error-message">{error}</span>

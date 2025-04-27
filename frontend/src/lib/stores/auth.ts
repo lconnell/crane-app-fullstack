@@ -3,7 +3,7 @@ import { createMutation, createQuery } from '@tanstack/svelte-query';
 import { goto } from '$app/navigation';
 import type { User, UserCreate, UserUpdate, ApiError } from '$lib/types';
 import { handleError } from '$lib/utils';
-import { LoginService, UsersService } from '$lib/client';
+import { LoginService, UsersService } from '$lib/client/index';
 
 export const isLoggedIn = () => {
     const token = localStorage.getItem('access_token');
